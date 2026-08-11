@@ -35,47 +35,33 @@ export default function Login() {
   }
 
   return (
-    <main className="auth-page">
-      <section className="auth-card card">
-        <div className="auth-heading">
-          <p className="auth-kicker">PERSONAL EMAIL VAULT</p>
-          <h1>Masuk</h1>
-          <p>Gunakan akun master untuk membuka vault.</p>
+    <main className="min-h-screen grid place-items-center p-6">
+      <section className="card w-full max-w-md p-8">
+        <div className="mb-7">
+          <p className="mb-2 text-xs font-bold tracking-[0.08em]" style={{ color: "var(--accent)" }}>
+            PERSONAL EMAIL VAULT
+          </p>
+          <h1 className="mb-1 text-3xl font-bold">Masuk</h1>
+          <p className="text-sm" style={{ color: "var(--text-muted)" }}>
+            Gunakan akun master untuk membuka vault.
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          <label>
+        <form onSubmit={handleSubmit} className="grid gap-4">
+          <label className="grid gap-1.5 text-xs font-semibold" style={{ color: "var(--text-muted)" }}>
             Email master
             <input name="email" type="email" autoComplete="email" placeholder="you@example.com" required />
           </label>
-          <label>
+          <label className="grid gap-1.5 text-xs font-semibold" style={{ color: "var(--text-muted)" }}>
             Master password
             <input name="password" type="password" autoComplete="current-password" required />
           </label>
-          {error && <p className="form-error" role="alert">{error}</p>}
-          <button type="submit" className="btn btn-primary auth-submit" disabled={submitting}>
+          {error && <p className="text-sm" style={{ color: "var(--danger)" }} role="alert">{error}</p>}
+          <button type="submit" className="btn btn-primary mt-2 w-full justify-center" disabled={submitting}>
             {submitting ? "Memeriksa..." : "Masuk ke Vault"}
           </button>
         </form>
       </section>
-
-      <style jsx>{`
-        .auth-page {
-          min-height: 100vh;
-          display: grid;
-          place-items: center;
-          padding: 1.5rem;
-        }
-        .auth-card { width: min(100%, 26rem); padding: 2rem; }
-        .auth-heading { margin-bottom: 1.75rem; }
-        .auth-kicker { color: var(--accent); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
-        h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.375rem; }
-        .auth-heading > p:last-child { color: var(--text-muted); font-size: 0.875rem; }
-        .auth-form { display: grid; gap: 1rem; }
-        label { display: grid; gap: 0.375rem; font-size: 0.8125rem; font-weight: 600; color: var(--text-muted); }
-        .auth-submit { justify-content: center; width: 100%; margin-top: 0.5rem; }
-        .form-error { color: var(--danger); font-size: 0.875rem; }
-      `}</style>
     </main>
   );
 }
