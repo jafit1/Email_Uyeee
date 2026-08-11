@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(cuid())
+  email String @unique
+  masterPasswordHash String
+  failedAttempts Int @default(0)
+  lockedUntil DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sessions Session[]
+  accounts EmailAccount[]
+  labels Label[]
+  auditLogs AuditLog[]
+}
+model Session {
+  id String @id @default(cuid())
+  tokenHash String @unique
+  userId String
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  lastSeenAt DateTime @default(now())
+  @@index([userId,expiresAt])
+}
+model EmailAccount {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  email String
+  alias String?
+  provider String?
+  loginUrl String?
+  username String?
+  passwordEncrypted String?
+  twoFactorType String?
+  totpSecretEncrypted String?
+  recoveryCodesEncrypted String?
+  notesEncrypted String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  lastUsedAt DateTime?
+  labels EmailAccountLabel[]
+  @@index([userId,email])
+}
+model Label {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  name String
+  color String @default("#64748b")
+  accounts EmailAccountLabel[]
+  @@unique([userId,name])
+}
+model EmailAccountLabel {
+  emailAccountId String
+  labelId String
+  emailAccount EmailAccount @relation(fields:[emailAccountId],references:[id],onDelete:Cascade)
+  label Label @relation(fields:[labelId],references:[id],onDelete:Cascade)
+  @@id([emailAccountId,labelId])
+}
+model AuditLog {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  action String
+  targetId String?
+  metadata String?
+  createdAt DateTime @default(now())
+  @@index([userId,createdAt])
+}

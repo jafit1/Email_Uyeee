@@ -1,0 +1,3 @@
+import { NextResponse } from "next/server"; import { db } from "@/lib/db"; import { requireUser,audit } from "@/lib/auth"; import { labelInput } from "@/lib/validation";
+export async function GET(){try{const u=await requireUser();return NextResponse.json(await db.label.findMany({where:{userId:u.id},include:{_count:{select:{accounts:true}}},orderBy:{name:"asc"}}));}catch{return NextResponse.json({error:"Unauthorized"},{status:401});}}
+export async function POST(req:Request){try{const u=await requireUser(),v=labelInput.parse(await req.json()),label=await db.label.create({data:{userId:u.id,...v}});await audit(u.id,"LABEL_CREATED",label.id);return NextResponse.json(label,{status:201});}catch{return NextResponse.json({error:"Invalid label"},{status:400});}}
